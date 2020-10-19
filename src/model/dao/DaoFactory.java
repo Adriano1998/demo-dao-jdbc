@@ -1,5 +1,6 @@
 package model.dao;
 
+import db.DB;
 import model.dao.impl.VendedorDaoJDBC;
 
 public class DaoFactory {
@@ -10,6 +11,7 @@ public class DaoFactory {
 	//macete para não expor a implementação.
 	
 	public static VendedorDao createVendedorDao() {
-		return new VendedorDaoJDBC();
+		//passa uma conexão como argumento.
+		return new VendedorDaoJDBC(DB.getConnection());
 	}
 }

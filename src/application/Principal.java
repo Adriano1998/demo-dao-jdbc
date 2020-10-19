@@ -13,13 +13,15 @@ public class Principal {
 		
 		Departamento obj = new Departamento(1, "Livros");
 		
-		Vendedor vendedor = new Vendedor(21, "Bob", "bob@gmail.com", new Date(), 3000.0, obj);
 		
-		System.out.println(vendedor);
+		
+	
 
-		//dessa forma o programa não conhece a implementação, somente a interface.
+		//dessa forma o programa não conhece a implementação, somente a interface. Tipo injeção de dependencia
 		VendedorDao vendedordao = DaoFactory.createVendedorDao();
-		
+	
+		Vendedor vendedor = vendedordao.findById(3);
+		System.out.println(vendedor);
 	}
 
 }
