@@ -13,12 +13,10 @@ public class Principal {
 		
 		Departamento obj = new Departamento(1, "Livros");
 		
-		
-		
-	
-
 		//dessa forma o programa não conhece a implementação, somente a interface. Tipo injeção de dependencia
 		VendedorDao vendedordao = DaoFactory.createVendedorDao();
+		
+		System.out.println("=== TEST 1: Vendedor findbyid ===");
 	
 		Vendedor vendedor = vendedordao.findById(3);
 		System.out.println(vendedor);

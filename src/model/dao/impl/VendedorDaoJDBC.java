@@ -60,19 +60,9 @@ public class VendedorDaoJDBC implements VendedorDao{
 					if(rs.next()) {
 						//dando verdadeiro - retornou a consulta
 						//instanciamos um departamento e setamos os valores dele.
-						Departamento dep = new Departamento();
-						dep.setId(rs.getInt("DepartmentId"));
-						dep.setNome(rs.getString("DepName"));
-						
+						Departamento dep = instantiateDepartamento(rs);
 						//criar o objeto seller e apontando para o departamento
-						Vendedor obj = new Vendedor();
-						obj.setId(rs.getInt("Id"));
-						obj.setNome(rs.getString("Name"));
-						obj.setEmail(rs.getString("Email"));
-						obj.setSalario(rs.getDouble("BaseSalary"));
-						obj.setData_aniver(rs.getDate("BirthDate"));
-						//associação de objetos. Colocou o dep instanciado la de cima
-						obj.setDepartamento(dep);
+						Vendedor obj = instantiateVendedor(rs, dep);
 						return obj;
 					}
 					//não existia nenhum vendedor com esse id que foi passado por parametro.
@@ -85,6 +75,26 @@ public class VendedorDaoJDBC implements VendedorDao{
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
+	}
+private Vendedor instantiateVendedor(ResultSet rs, Departamento dep) throws SQLException {
+	Vendedor obj = new Vendedor();
+	obj.setId(rs.getInt("Id"));
+	obj.setNome(rs.getString("Name"));
+	obj.setEmail(rs.getString("Email"));
+	obj.setSalario(rs.getDouble("BaseSalary"));
+	obj.setData_aniver(rs.getDate("BirthDate"));
+	//associação de objetos. Colocou o dep instanciado la de cima
+	obj.setDepartamento(dep);
+	return obj;
+	}
+
+	//propagou a exceção atraves desse throws, porque a exceção ja esta sendo tratada la em cima.
+	private Departamento instantiateDepartamento(ResultSet rs) throws SQLException {
+		Departamento dep = new Departamento();
+		dep.setId(rs.getInt("DepartmentId"));
+		dep.setNome(rs.getString("DepName"));
+		
+		return dep;
 	}
 
 	@Override
