@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -101,6 +104,62 @@ private Vendedor instantiateVendedor(ResultSet rs, Departamento dep) throws SQLE
 	public List<Vendedor> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Vendedor> findByDepartamento(Departamento departamento) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			st = conn.prepareStatement(
+					"SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "WHERE DepartmentId = ? "
+					+ "ORDER BY Name");
+					
+					//primeira interrogação, passando o id como argumento do departamento, por isso o get.
+					st.setInt(1, departamento.getId());	
+					//para executar
+					rs = st.executeQuery();
+					
+					//como são vários valores vai criar uma lista de resultado.
+					List<Vendedor> list = new ArrayList<>();
+					
+					//chave - integer e o valor - departamento
+					//criou um map vazio
+					Map<Integer, Departamento> map = new HashMap<>();
+					
+					
+					//while ao inves do if, porque pode retornar mais de um resultado.
+					while(rs.next()) {
+						//vai guardar dentro desse map qualquer departamento que instanciar
+						//a cada vez que passar no while testa se o departamento ja existe - vai no map e tenta buscar com o metodo get
+						// um departamento com esse id
+						//se não existir esse rs.get retorna nulo e ai sim instancia o departamento
+						Departamento dep = map.get(rs.getInt("DepartmentId"));
+						
+						//salva o departamento no dep
+						if(dep == null) {
+							dep = instantiateDepartamento(rs);
+							//vai salvar esse departamento dentro do map para que na proxima vez possa verificar e ver que ja existe
+							map.put(rs.getInt("DepartmentId"), dep);
+						}
+			
+						Vendedor obj = instantiateVendedor(rs, dep);
+						list.add(obj);
+					}
+					
+					return list;
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
 	}
 
 	
