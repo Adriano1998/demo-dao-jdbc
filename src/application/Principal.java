@@ -44,6 +44,12 @@ public class Principal {
 		Vendedor novovendedor = new Vendedor(null, "Greg", "greg@gmail.com", new Date(), 4000.0, departamento);
 		vendedordao.insert(novovendedor);
 		System.out.println("Inserido! Novo id = " + novovendedor.getId());
+		
+		System.out.println("\n === TEST 5: Vendedor UPDATE ====");
+		vendedor = vendedordao.findById(1);
+		vendedor.setNome("Marta Carrasco");
+		vendedordao.update(vendedor);
+		System.out.println("Atualização completa");
 	}
 
 }

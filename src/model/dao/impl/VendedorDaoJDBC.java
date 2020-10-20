@@ -77,7 +77,34 @@ public class VendedorDaoJDBC implements VendedorDao{
 
 	@Override
 	public void update(Vendedor obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					//tem que deixar um espaço no final entre o ultimo caractere e as aspas
+					"UPDATE seller "
+					+ "SET Name = ?,  Email = ?, BirthDate = ?, BaseSalary =?, DepartmentId= ? " 
+					+ "WHERE Id = ?");
+					
+					
+					
+			//config das interrogações, ex: 1 - vale como a primeira interrogação.
+			st.setString(1, obj.getNome());
+			st.setString(2, obj.getEmail());
+			//instancia uma data do sql
+			st.setDate(3, new java.sql.Date(obj.getData_aniver().getTime()));
+			st.setDouble(4, obj.getSalario());
+			st.setInt(5, obj.getDepartamento().getId());
+			st.setInt(6, obj.getId());
+			//executar
+			 st.executeUpdate();
+			
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 		
 	}
 
