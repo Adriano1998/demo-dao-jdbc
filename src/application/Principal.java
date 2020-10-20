@@ -31,6 +31,15 @@ public class Principal {
 		for(Vendedor obj : list) {
 			System.out.println(obj);
 		}
+		
+		System.out.println("\n === TEST 3: Vendedor findAll ====");
+		
+		list = vendedordao.findAll();
+		//testar ver se funciona
+		for(Vendedor obj : list) {
+			System.out.println(obj);
+		}
+		
 	}
 
 }
