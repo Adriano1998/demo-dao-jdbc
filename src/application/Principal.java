@@ -40,6 +40,10 @@ public class Principal {
 			System.out.println(obj);
 		}
 		
+		System.out.println("\n === TEST 4: Vendedor Insert ====");
+		Vendedor novovendedor = new Vendedor(null, "Greg", "greg@gmail.com", new Date(), 4000.0, departamento);
+		vendedordao.insert(novovendedor);
+		System.out.println("Inserido! Novo id = " + novovendedor.getId());
 	}
 
 }

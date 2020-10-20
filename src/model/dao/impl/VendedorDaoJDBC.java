@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,52 @@ public class VendedorDaoJDBC implements VendedorDao{
 	
 	@Override
 	public void insert(Vendedor obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					//tem que deixar um espaço no final entre o ultimo caractere e as aspas
+					"INSERT INTO seller "
+					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES "
+					+ "(?, ?, ?, ?, ?)",
+					//comando para retornar o id do novo vendedor inserido.
+					Statement.RETURN_GENERATED_KEYS);
+					
+			//config das interrogações, ex: 1 - vale como a primeira interrogação.
+			st.setString(1, obj.getNome());
+			st.setString(2, obj.getEmail());
+			//instancia uma data do sql
+			st.setDate(3, new java.sql.Date(obj.getData_aniver().getTime()));
+			st.setDouble(4, obj.getSalario());
+			st.setInt(5, obj.getDepartamento().getId());
+			//executar
+			int rowsAffected = st.executeUpdate();
+			if(rowsAffected > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				//se existir esse cara pega o valor do id gerado, atribui esse id gerado dentro do objeto obj para que o objeto fique com o novo id.
+				if(rs.next()) {
+					//pega o primeiro id gerado
+					int id = rs.getInt(1);
+					//ja atribui pro obj o primeiro id;
+					obj.setId(id);
+				}
+				//fecha aqui no meio e não no fim, pois foi criado dentro do if e não vai estar no finally
+				DB.closeResultSet(rs);
+			}
+			//se nenhuma linha for alterada
+			else {
+				throw new DbException("Erro inesperado! Nenhuma linha afetada!");
+			}
+			
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+		
+		
 		
 	}
 
